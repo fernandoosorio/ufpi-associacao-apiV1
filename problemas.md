@@ -28,10 +28,8 @@ Observações:
 
 O valor a ser pago não pode ser menor que uma parcela, embora não precise ser exatamente duas parcelas. Uma parcela de R$20,00 por mês aceita um pagamento de R$30,00, sendo uma parcela completa e um pedaço da próxima. 
 
-Associados remidos não deveriam mais realizar pagamentos de taxas administrativas vigentes em datas antes da sua remissão, gerando exceção de AssociadoJaRemido se houver tentativa de se pagar algo para esse caso. 
+Associados remidos não devem mais realizar pagamentos de taxas administrativas vigentes em datas antes da sua remissão, gerando exceção de AssociadoJaRemido se houver tentativa de se pagar algo para esse caso. 
 
-
-**Para buscar pelo tipo na base de dados na classe VeiculoRepository foi disponibilizado o método findAllVeiculosByType(Class<?> classe), que retorna os veículos pelo tipo, para usá-la chame o Helper criado para retornar a classe quando o tipo é passado TipoVeiculoClassHelper.getTipoVeiculoClass(tipo), isto é veiculoRepository.findAllVeiculosByType(TipoVeiculoClassHelper.getTipoVeiculoClass(tipo))**
 
 O método já consta na classe `VeiculoService`, conforme abaixo:
 ```java
