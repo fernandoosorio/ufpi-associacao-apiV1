@@ -31,7 +31,7 @@ O valor a ser pago não pode ser menor que uma parcela, embora não precise ser 
 Associados remidos não devem mais realizar pagamentos de taxas administrativas vigentes em datas antes da sua remissão, gerando exceção de AssociadoJaRemido se houver tentativa de se pagar algo para esse caso. 
 
 
-O método já consta na classe `VeiculoService`, conforme abaixo:
+O método já consta na classe `PagamentoService`, conforme abaixo:
 ```java
  public Pagamento registrarPagamento(int numAssociacao, String taxa, int vigencia, int numAssociado, LocalDate data,
             double valor) throws AssociacaoNaoExistente, AssociadoNaoExistente, AssociadoJaRemido, TaxaNaoExistente, ValorInvalido {}
