@@ -50,28 +50,18 @@ public class TaxaService {
 
     //Este é o problema: **ID Questão = 003**
     public Double calcularTotalDeTaxas(int numAssociacao, int vigencia)  throws AssociacaoNaoExistente, TaxaNaoExistente {
-        // Verificar se a associação existe
         if (!associacaoRepository.existsByNumero(numAssociacao)) {
             throw new AssociacaoNaoExistente();
         }
-
-        // Buscar todas as taxas para a associação e vigência fornecidas
         Associacao associacao = associacaoRepository.findByNumero(numAssociacao);
-        List<Taxa> taxas = taxaRepository.findByAssociacaoAndVigencia(associacao, vigencia);
-        
-        // Verificar se existem taxas cadastradas
-        if (taxas.isEmpty()) {
+
+        if (!taxaRepository.existsByAssociacaoAndVigencia(associacao, vigencia)) {
             throw new TaxaNaoExistente();
         }
 
-        // Calcular o total das taxas
-        double total = 0.0;
-        for (Taxa taxa : taxas) {
-            total += taxa.getValorAno();
-        }
+        List<Taxa> taxas = taxaRepository.findByAssociacaoAndVigencia(associacao, vigencia);
 
-        // Retornar o total calculado
-        return total;
+        return taxas.stream().mapToDouble(Taxa::getValorAno).sum();
     }
     
 }
