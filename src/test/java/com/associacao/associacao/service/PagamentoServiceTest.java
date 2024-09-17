@@ -57,7 +57,6 @@ public class PagamentoServiceTest {
         taxaBD.setParcelas(1);
 
         when(associacaoRepository.existsByNumero(anyInt())).thenReturn(true);
-        when(taxaRepository.existsByAssociacaoAndNomeAndVigencia(any(), anyString(), anyInt())).thenReturn(true);
         when(taxaRepository.findByAssociacaoAndNomeAndVigencia(any(), anyString(), anyInt())).thenReturn(taxaBD);
         when(associadoRepository.existsByNumeroAndRemido(anyInt(), anyBoolean())).thenReturn(false);
         when(associadoRepository.existsByNumero(anyInt())).thenReturn(true);
@@ -80,7 +79,8 @@ public class PagamentoServiceTest {
     @Test
     public void testRegistrarPagamentoTaxaNaoExistente() {
         when(associacaoRepository.existsByNumero(anyInt())).thenReturn(true);
-
+        when(taxaRepository.findByAssociacaoAndNomeAndVigencia(any(), anyString(), anyInt())).thenReturn(null);
+        when(associadoRepository.existsByNumero(anyInt())).thenReturn(true);
         assertThrows(TaxaNaoExistente.class, () -> {
             pagamentoService.registrarPagamento(1, "Taxa", 2022, 1, LocalDate.now(), 100.0);
         });
@@ -93,9 +93,8 @@ public class PagamentoServiceTest {
         taxa.setParcelas(1);
 
         when(associacaoRepository.existsByNumero(anyInt())).thenReturn(true);
-        when(taxaRepository.existsByAssociacaoAndNomeAndVigencia(any(), anyString(), anyInt())).thenReturn(true);
+        when(associadoRepository.existsByNumero(anyInt())).thenReturn(true);
         when(associadoRepository.existsByNumeroAndRemido(anyInt(), anyBoolean())).thenReturn(true);
-        when(taxaRepository.findByAssociacaoAndNomeAndVigencia(any(), anyString(), anyInt())).thenReturn(taxa);
 
         assertThrows(AssociadoJaRemido.class, () -> {
             pagamentoService.registrarPagamento(1, "Taxa", 2022, 1, LocalDate.now(), 100.0);
@@ -109,10 +108,6 @@ public class PagamentoServiceTest {
         taxa.setParcelas(1);
 
         when(associacaoRepository.existsByNumero(anyInt())).thenReturn(true);
-        when(taxaRepository.existsByAssociacaoAndNomeAndVigencia(any(), anyString(), anyInt())).thenReturn(true);
-        when(associadoRepository.existsByNumeroAndRemido(anyInt(), anyBoolean())).thenReturn(false);
-        when(taxaRepository.findByAssociacaoAndNomeAndVigencia(any(), anyString(), anyInt())).thenReturn(taxa);
-
         assertThrows(AssociadoNaoExistente.class, () -> {
             pagamentoService.registrarPagamento(1, "Taxa", 2022, 1, LocalDate.now(), 100.0);
         });

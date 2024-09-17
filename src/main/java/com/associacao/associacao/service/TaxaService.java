@@ -8,6 +8,7 @@ import com.associacao.associacao.exception.AssociacaoNaoExistente;
 import com.associacao.associacao.exception.TaxaJaExistente;
 import com.associacao.associacao.exception.TaxaNaoExistente;
 import com.associacao.associacao.exception.ValorInvalido;
+import com.associacao.associacao.model.Associacao;
 import com.associacao.associacao.model.Taxa;
 import com.associacao.associacao.repository.AssociacaoRepository;
 import com.associacao.associacao.repository.TaxaRepository;
@@ -48,10 +49,29 @@ public class TaxaService {
     }
 
     //Este é o problema: **ID Questão = 003**
-    //Se usar Copilot para resolver: Lembre-se de exportar o chat
-    //       `Ctrl+Shift+P | Chat: Exportar Chat...`
     public Double calcularTotalDeTaxas(int numAssociacao, int vigencia)  throws AssociacaoNaoExistente, TaxaNaoExistente {
-        return null; 
+        // Verificar se a associação existe
+        if (!associacaoRepository.existsByNumero(numAssociacao)) {
+            throw new AssociacaoNaoExistente();
+        }
+
+        // Buscar todas as taxas para a associação e vigência fornecidas
+        Associacao associacao = associacaoRepository.findByNumero(numAssociacao);
+        List<Taxa> taxas = taxaRepository.findByAssociacaoAndVigencia(associacao, vigencia);
+        
+        // Verificar se existem taxas cadastradas
+        if (taxas.isEmpty()) {
+            throw new TaxaNaoExistente();
+        }
+
+        // Calcular o total das taxas
+        double total = 0.0;
+        for (Taxa taxa : taxas) {
+            total += taxa.getValorAno();
+        }
+
+        // Retornar o total calculado
+        return total;
     }
     
 }

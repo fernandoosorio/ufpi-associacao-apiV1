@@ -94,7 +94,6 @@ public class TaxaServiceTest {
         taxas.add(taxa2);
 
         when(associacaoRepository.existsByNumero(anyInt())).thenReturn(true);
-        when(taxaRepository.existsByAssociacaoAndVigencia(any(), anyInt())).thenReturn(true);
         when(taxaRepository.findByAssociacaoAndVigencia(any(), anyInt())).thenReturn(taxas);
 
         Double total = taxaService.calcularTotalDeTaxas(1, 2022);
@@ -113,7 +112,6 @@ public class TaxaServiceTest {
     @Test
     public void testCalcularTotalDeTaxasTaxaNaoExistente() {
         when(associacaoRepository.existsByNumero(anyInt())).thenReturn(true);
-        when(taxaRepository.existsByAssociacaoAndVigencia(any(), anyInt())).thenReturn(false);
         assertThrows(TaxaNaoExistente.class, () -> {
             taxaService.calcularTotalDeTaxas(1, 2022);
         });
