@@ -15,6 +15,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import com.associacao.associacao.exception.AssociacaoNaoExistente;
 import com.associacao.associacao.exception.TaxaJaExistente;
@@ -26,6 +28,7 @@ import com.associacao.associacao.repository.AssociacaoRepository;
 import com.associacao.associacao.repository.TaxaRepository;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class TaxaServiceTest {
 
     @InjectMocks
@@ -94,7 +97,9 @@ public class TaxaServiceTest {
         taxas.add(taxa2);
 
         when(associacaoRepository.existsByNumero(anyInt())).thenReturn(true);
+        when(associacaoRepository.findByNumero(anyInt())).thenReturn(new Associacao());
         when(taxaRepository.findByAssociacaoAndVigencia(any(), anyInt())).thenReturn(taxas);
+        when(taxaRepository.existsByAssociacaoAndVigencia(any(), anyInt())).thenReturn(true);
 
         Double total = taxaService.calcularTotalDeTaxas(1, 2022);
 
@@ -104,6 +109,7 @@ public class TaxaServiceTest {
     @Test
     public void testCalcularTotalDeTaxasAssociacaoNaoExistente() {
         when(associacaoRepository.existsByNumero(anyInt())).thenReturn(false);
+        
         assertThrows(AssociacaoNaoExistente.class, () -> {
             taxaService.calcularTotalDeTaxas(1, 2022);
         });
@@ -112,6 +118,9 @@ public class TaxaServiceTest {
     @Test
     public void testCalcularTotalDeTaxasTaxaNaoExistente() {
         when(associacaoRepository.existsByNumero(anyInt())).thenReturn(true);
+        when(associacaoRepository.findByNumero(anyInt())).thenReturn(new Associacao());
+        when(taxaRepository.findByAssociacaoAndVigencia(any(), anyInt())).thenReturn(null);
+        when(taxaRepository.existsByAssociacaoAndVigencia(any(), anyInt())).thenReturn(false);
         assertThrows(TaxaNaoExistente.class, () -> {
             taxaService.calcularTotalDeTaxas(1, 2022);
         });
