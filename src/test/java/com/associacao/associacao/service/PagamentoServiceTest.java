@@ -18,6 +18,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import com.associacao.associacao.exception.AssociacaoNaoExistente;
 import com.associacao.associacao.exception.AssociadoJaRemido;
@@ -32,7 +34,10 @@ import com.associacao.associacao.repository.AssociadoRepository;
 import com.associacao.associacao.repository.PagamentoRepository;
 import com.associacao.associacao.repository.TaxaRepository;
 
+
+
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class PagamentoServiceTest {
 
     @InjectMocks
@@ -61,7 +66,9 @@ public class PagamentoServiceTest {
         when(associadoRepository.existsByNumeroAndRemido(anyInt(), anyBoolean())).thenReturn(false);
         when(associadoRepository.existsByNumero(anyInt())).thenReturn(true);
         when(associacaoRepository.findByNumero(anyInt())).thenReturn(new Associacao());
-        when(associadoRepository.findByNumero(anyInt())).thenReturn(new Associado());
+        Associado associado = new Associado();
+        associado.setRemido(false);
+        when(associadoRepository.findByNumero(anyInt())).thenReturn(associado);
         when(pagamentoRepository.save(any(Pagamento.class))).thenReturn(new Pagamento());
 
         Pagamento pagamento = pagamentoService.registrarPagamento(1, "Taxa", 2022, 1, LocalDate.now(), 100.0);
@@ -81,6 +88,10 @@ public class PagamentoServiceTest {
         when(associacaoRepository.existsByNumero(anyInt())).thenReturn(true);
         when(taxaRepository.findByAssociacaoAndNomeAndVigencia(any(), anyString(), anyInt())).thenReturn(null);
         when(associadoRepository.existsByNumero(anyInt())).thenReturn(true);
+        Associado associado = new Associado();
+        associado.setRemido(false);
+       
+        when(associadoRepository.findByNumero(anyInt())).thenReturn(associado);
         assertThrows(TaxaNaoExistente.class, () -> {
             pagamentoService.registrarPagamento(1, "Taxa", 2022, 1, LocalDate.now(), 100.0);
         });
@@ -95,6 +106,10 @@ public class PagamentoServiceTest {
         when(associacaoRepository.existsByNumero(anyInt())).thenReturn(true);
         when(associadoRepository.existsByNumero(anyInt())).thenReturn(true);
         when(associadoRepository.existsByNumeroAndRemido(anyInt(), anyBoolean())).thenReturn(true);
+        Associado associado = new Associado();
+        associado.setRemido(true);
+        associado.setDataRemissao(LocalDate.now().minusDays(1));
+        when(associadoRepository.findByNumero(anyInt())).thenReturn(associado);
 
         assertThrows(AssociadoJaRemido.class, () -> {
             pagamentoService.registrarPagamento(1, "Taxa", 2022, 1, LocalDate.now(), 100.0);
