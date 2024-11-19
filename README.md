@@ -1,7 +1,7 @@
 # Sistema para Controle de uma Associação
 
 ### Para executar este projeto
-1.  baixe ou clone o projeto `git clone https://github.com/fernandoosorio/ufpi-associacao-api`
+1.  baixe ou clone o projeto `git clone https://github.com/{oculta_para_avaliação}/{oculta_para_avaliação}-associacao-api`
 
 2. Acesse o diretório  `cd ufpi-associacao-api`
 
